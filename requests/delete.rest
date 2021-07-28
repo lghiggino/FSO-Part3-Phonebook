@@ -1,0 +1,2 @@
+//DELETE ONE - REMEMBER TO CHANGE THE FINAL NUMBER
+DELETE http://localhost:3002/api/persons/8

@@ -1,0 +1,7 @@
+//GET ALL Notes
+GET http://localhost:3002/api/persons
+
+###
+
+//GET ONE - REMEMBER TO CHANGE THE FINAL NUMBER
+GET http://localhost:3002/api/persons/2
