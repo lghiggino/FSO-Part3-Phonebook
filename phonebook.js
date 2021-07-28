@@ -48,32 +48,37 @@ app.delete("/api/persons/:id", (request, response) => {
 
 //post ONE
 app.post("/api/persons", (request, response) => {
-    const body = request.body
+    console.log(request.body)
 
-    if (!body.name) {
+    if (!request.body.name) {
         return response.status(400).json({ error: "name missing" })
     }
-    if (!body.number) {
+    if (!request.body.number) {
         return response.status(400).json({ error: "number missing" })
     }
 
-    const repeatedPerson = persons.filter(person => person.name === body.name)
-    if (repeatedPerson) {
-        return response.status(400).json({ error: "Name must be unique" })
-    }
+    // const repeatedPerson = persons.filter(person => person.name === request.body.name)
+    // if (repeatedPerson) {
+    //     return response.status(400).json({ error: "Name must be unique" })
+    // }
+
+    persons.filter(person =>{ 
+        if(person.name === request.body.name){
+            console.log(person.name, request.body.name)
+        }
+    })
 
     const generateId = () => {
         return persons.length + 1
     }
 
     const person = {
-        name: body.name,
-        number: body.number,
+        name: request.body.name,
+        number: request.body.number,
         id: generateId()
     }
 
-    persons = persons.concat(person)
-    response.json(persons)
+    response.json(person)
 })
 
 
