@@ -40,10 +40,10 @@ app.get("/api/persons/:id", (request, response) => {
 
 //delete ONE
 app.delete("/api/persons/:id", (request, response) => {
-    const idNumber = +request.params.id
+    const idNumber = request.params.id
     persons = persons.filter(p => p.id !== idNumber)
 
-    response.status(204).end()
+    response.json(persons)
 })
 
 //post ONE
@@ -70,7 +70,7 @@ app.post("/api/persons", (request, response) => {
     })
 
     const generateId = () => {
-        return persons.length + 1
+        return new Date().toISOString()
     }
 
     const person = {
