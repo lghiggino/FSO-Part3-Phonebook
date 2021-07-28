@@ -65,6 +65,7 @@ app.post("/api/persons", (request, response) => {
     persons.filter(person =>{ 
         if(person.name === request.body.name){
             console.log(person.name, request.body.name)
+            return response.status(400).json({ error: "Name must be unique" })
         }
     })
 
@@ -78,6 +79,7 @@ app.post("/api/persons", (request, response) => {
         id: generateId()
     }
 
+    persons = persons.concat(person)
     response.json(person)
 })
 
