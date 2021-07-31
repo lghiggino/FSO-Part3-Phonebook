@@ -29,7 +29,8 @@ app.get("/api/persons", (request, response) => {
 
 //get ONE
 app.get("/api/persons/:id", (request, response) => {
-    const idNumber = +request.params.id
+    console.log("request.params.id: ", request.params.id)
+    const idNumber = request.params.id
     const singlePerson = persons.filter(p => p.id === idNumber)
     if (singlePerson) {
         response.json(singlePerson)
