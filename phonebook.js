@@ -1,10 +1,11 @@
 const express = require("express")
-const app = express()
 const cors = require('cors')
+let persons = require("./persons.js")
+const app = express()
+
 app.use(express.json())
 app.use(cors())
-
-let persons = require("./persons.js")
+app.use(express.static("build"))
 
 //creating Middleware
 const requestLogger = (request, response, next) => {
@@ -17,13 +18,13 @@ const requestLogger = (request, response, next) => {
 app.use(requestLogger)
 
 
+
 // ROUTES
 app.get("/", (request, response) => {
     response.send("<h1>Hello from Phonebook</h1>")
 })
 
 app.get("/api/persons", (request, response) => {
-    request.body = ""
     response.json(persons)
 })
 
@@ -32,6 +33,7 @@ app.get("/api/persons/:id", (request, response) => {
     console.log("request.params.id: ", request.params.id)
     const idNumber = request.params.id
     const singlePerson = persons.filter(p => p.id === idNumber)
+    
     if (singlePerson) {
         response.json(singlePerson)
     } else {
@@ -44,7 +46,8 @@ app.delete("/api/persons/:id", (request, response) => {
     const idNumber = request.params.id
     persons = persons.filter(p => p.id !== idNumber)
 
-    response.json(persons)
+    // response.json(persons)
+    response.status(204).end()
 })
 
 //post ONE
