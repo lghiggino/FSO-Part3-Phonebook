@@ -8,7 +8,7 @@
     "dev": "nodemon phonebook.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
-    "deploy:heroku": "npm run build:ui && git add . && git commit -m uibuild && git push heroku main"
+    "deploy:heroku": "npm run build:ui && git add . && git commit -m uibuild && git push heroku master"
   },
   "author": "",
   "license": "ISC",
