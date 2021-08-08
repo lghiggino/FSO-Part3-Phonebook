@@ -32,14 +32,19 @@ app.get("/api/persons", (request, response) => {
 //get ONE
 app.get("/api/persons/:id", (request, response) => {
     console.log("request.params.id: ", request.params.id)
-    const idNumber = request.params.id
-    const singlePerson = persons.filter(p => p.id === idNumber)
+    const personId = request.params.id
 
-    if (singlePerson) {
-        response.json(singlePerson)
-    } else {
-        response.status(404).end()
-    }
+    Person.findById(personId).then(element => {
+        if (element) {
+            response.json(element)
+        } else {
+            response.status(404).end()
+        }
+    }).catch(error => {
+        console.log(error)
+        response.status(400).send({ error: 'malformatted id' })
+    })
+
 })
 
 //delete ONE
@@ -71,14 +76,14 @@ app.post("/api/persons", (request, response) => {
             response.json(savedPerson)
         })
     }
-    catch(error){
+    catch (error) {
         console.log("error while creating a new person", error)
     }
 
 
-    
 
-    
+
+
 })
 
 
