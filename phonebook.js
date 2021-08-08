@@ -1,10 +1,11 @@
+require("dotenv").config()
 const express = require("express")
-const cors = require('cors')
-let persons = require("./persons.js")
 const app = express()
+const Person = require("./models/people")
 
+
+//MIDDLEWARES
 app.use(express.json())
-app.use(cors())
 app.use(express.static("build"))
 
 //creating Middleware
@@ -17,15 +18,15 @@ const requestLogger = (request, response, next) => {
 }
 app.use(requestLogger)
 
-
-
 // ROUTES
 app.get("/", (request, response) => {
-    response.send("<h1>Hello from Phonebook</h1>")
+    response.send("<h1>If you are seeing this message something went wrong with: app.use(express.static('build')) </h1>")
 })
 
 app.get("/api/persons", (request, response) => {
-    response.json(persons)
+    Person.find({}).then(elements => {
+        response.json(elements)
+    })
 })
 
 //get ONE
@@ -33,7 +34,7 @@ app.get("/api/persons/:id", (request, response) => {
     console.log("request.params.id: ", request.params.id)
     const idNumber = request.params.id
     const singlePerson = persons.filter(p => p.id === idNumber)
-    
+
     if (singlePerson) {
         response.json(singlePerson)
     } else {
@@ -60,31 +61,24 @@ app.post("/api/persons", (request, response) => {
     if (!request.body.number) {
         return response.status(400).json({ error: "number missing" })
     }
+    try {
+        const person = new Person({
+            name: request.body.name,
+            number: request.body.number,
+        })
 
-    // const repeatedPerson = persons.filter(person => person.name === request.body.name)
-    // if (repeatedPerson) {
-    //     return response.status(400).json({ error: "Name must be unique" })
-    // }
-
-    persons.filter(person =>{ 
-        if(person.name === request.body.name){
-            console.log(person.name, request.body.name)
-            return response.status(400).json({ error: "Name must be unique" })
-        }
-    })
-
-    const generateId = () => {
-        return new Date().toISOString()
+        person.save().then(savedPerson => {
+            response.json(savedPerson)
+        })
+    }
+    catch(error){
+        console.log("error while creating a new person", error)
     }
 
-    const person = {
-        name: request.body.name,
-        number: request.body.number,
-        id: generateId()
-    }
 
-    persons = persons.concat(person)
-    response.json(person)
+    
+
+    
 })
 
 
