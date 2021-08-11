@@ -3,10 +3,9 @@ const express = require("express")
 const app = express()
 const Person = require("./models/people")
 
-
 //MIDDLEWARES
-app.use(express.json())
 app.use(express.static("build"))
+app.use(express.json())
 
 //creating Middleware
 const requestLogger = (request, response, next) => {
@@ -17,6 +16,15 @@ const requestLogger = (request, response, next) => {
     next()
 }
 app.use(requestLogger)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error)
+    if (error.name === "CastError") {
+        return response.status(400).send({ error: "malformatted id" })
+    }
+    next(error)
+}
+app.use(errorHandler)
 
 // ROUTES
 app.get("/", (request, response) => {
@@ -49,11 +57,14 @@ app.get("/api/persons/:id", (request, response) => {
 
 //delete ONE
 app.delete("/api/persons/:id", (request, response) => {
-    const idNumber = request.params.id
-    persons = persons.filter(p => p.id !== idNumber)
-
-    // response.json(persons)
-    response.status(204).end()
+    const id = request.params.id
+    Person.findByIdAndRemove(id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => {
+            console.error(error)
+        })
 })
 
 //post ONE
@@ -66,19 +77,37 @@ app.post("/api/persons", (request, response) => {
     if (!request.body.number) {
         return response.status(400).json({ error: "number missing" })
     }
-    try {
-        const person = new Person({
-            name: request.body.name,
-            number: request.body.number,
-        })
 
-        person.save().then(savedPerson => {
-            response.json(savedPerson)
-        })
+    if (!Person.findOne({ name: request.body.name })) {
+        try {
+            const person = new Person({
+                name: request.body.name,
+                number: request.body.number,
+            })
+
+            person.save().then(savedPerson => {
+                response.json(savedPerson)
+            })
+        }
+        catch (error) {
+            console.log("error while creating a new person", error)
+        }
+    } else {
+        const id = request.params.id
+        const person = {
+            name: request.body.name,
+            number: request.body.number
+        }
+
+        Person.findOneAndUpdate(id, person, { new: true })
+            .then(updatePerson => {
+                response.json(updatePerson)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
-    catch (error) {
-        console.log("error while creating a new person", error)
-    }
+
 
 
 
