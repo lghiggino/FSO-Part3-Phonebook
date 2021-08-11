@@ -22,8 +22,8 @@ const Person = mongoose.model("Person", personSchema)
 
 //CREATE
 const person = new Person({
-    name: "Mica Allen",
-    number: "123-456-789-0"
+    name: "Barões da Pisadinha",
+    number: "(75) 9 8888 7777"
 })
 
 person.save().then(response => {
