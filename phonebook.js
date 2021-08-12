@@ -17,14 +17,6 @@ const requestLogger = (request, response, next) => {
 }
 app.use(requestLogger)
 
-const errorHandler = (error, request, response, next) => {
-    console.error(error)
-    if (error.name === "CastError") {
-        return response.status(400).send({ error: "malformatted id" })
-    }
-    next(error)
-}
-app.use(errorHandler)
 
 // ROUTES
 app.get("/", (request, response) => {
@@ -132,8 +124,20 @@ app.get("/info", (request, response) => {
 const unknownEndpoint = (request, response, next) => {
     response.status(404).send({ "error": "Unknown Endpoint" })
 }
-
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.log("================HIT THE ERROR HANDLER==================")
+    console.error(error)
+    if (error.name === "CastError") {
+        return response.status(400).send({ error: "Malformatted id" })
+    }else if(error.name === "ValidationError"){
+        return response.status(400).send({ error: "Validation error" })
+    }
+    next(error)
+}
+app.use(errorHandler)
+
 const PORT = process.env.PORT || 3004
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
