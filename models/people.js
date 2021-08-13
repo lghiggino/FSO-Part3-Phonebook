@@ -1,18 +1,16 @@
 const mongoose = require("mongoose")
-require('dotenv').config()
+require("dotenv").config()
 
 // if (process.argv.length < 3) {
 //     console.log("please provide the password as an argument node mongo.js <password> ")
 //     process.exit(1)
 // }
 
-const password = process.env.MONGO_DB_PASS
-
 const url = process.env.MONGO_DB_CONNECTION_STRING
 console.log("qual é a url?", url)
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-    .then(result => {
+    .then(() => {
         console.log("Connected to MongoDB")
     }).catch(error => {
         console.error(error)
@@ -27,13 +25,15 @@ const personSchema = new mongoose.Schema({
     },
     number: {
         type: String,
+        minLength: 8,
+        maxLength: 20,
         required: true,
     }
 })
 
 personSchema.set("toJSON", {
     transform: (document, returnedObject) => {
-        returnedObject.id =  returnedObject._id.toString()
+        returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
     }
