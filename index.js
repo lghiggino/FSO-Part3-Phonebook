@@ -1,6 +1,6 @@
 const express = require("express");
 let people = require("./fixtures");
-const generateId = require("./utils");
+const { generateId, duplicateName } = require("./utils");
 
 const app = express();
 
@@ -43,6 +43,14 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
+
+  const isDuplicate = duplicateName(people, body.name);
+
+  if (isDuplicate) {
+    return response.status(400).json({
+      error: "name must be unique",
+    });
+  }
 
   if (!body.name || !body.number) {
     return response.status(400).json({
