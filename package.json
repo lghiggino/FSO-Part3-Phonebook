@@ -1,27 +1,30 @@
 {
-  "name": "phonebook",
+  "name": "fso-part3-phonebook",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
-    "deploy:heroku": "npm run build:ui && git add . && git commit -m uibuild && git push heroku master",
-    "lint": "eslint ."
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lghiggino/FSO-Part3-Phonebook.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lghiggino/FSO-Part3-Phonebook/issues"
+  },
+  "homepage": "https://github.com/lghiggino/FSO-Part3-Phonebook#readme",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.13.5",
-    "morgan": "^1.10.0"
+    "express": "^4.18.2"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.20"
   }
 }
