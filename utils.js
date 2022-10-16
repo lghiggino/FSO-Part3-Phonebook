@@ -8,7 +8,18 @@ const generateId = (people) => {
 const duplicateName = (people, name) => people.some((person) => person.name === name);
 
 const morganLogger = () => {
-    return morgan("tiny")
+    return morgan(function (tokens, req, res) {
+        console.log(req.method)
+
+        return [
+          tokens.method(req, res),
+          tokens.url(req, res),
+          tokens.status(req, res),
+          tokens.res(req, res, 'content-length'), '-',
+          tokens['response-time'](req, res), 'ms',
+          JSON.stringify(req.body)
+        ].join(' ')
+      })
 }
   
 module.exports = {generateId, duplicateName, morganLogger};
