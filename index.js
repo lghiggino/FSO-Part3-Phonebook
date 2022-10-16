@@ -1,10 +1,13 @@
 const express = require("express");
+const { generateId, duplicateName, morganLogger } = require("./utils");
+const morgan = require("morgan");
+
 let people = require("./fixtures");
-const { generateId, duplicateName } = require("./utils");
 
 const app = express();
 
 app.use(express.json());
+app.use(morganLogger());
 
 app.get("/api/persons", (request, response) => {
   response.json(people);
