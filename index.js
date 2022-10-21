@@ -1,11 +1,12 @@
 const express = require("express");
-const { generateId, duplicateName, morganLogger } = require("./utils");
 const morgan = require("morgan");
+const cors = require("cors");
+const { generateId, duplicateName, morganLogger } = require("./utils");
 
 let people = require("./fixtures");
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(morganLogger());
 
@@ -68,7 +69,9 @@ app.post("/api/persons", (request, response) => {
   response.status(201).json(body);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// https://fullstackopen.com/en/part3/deploying_app_to_internet
