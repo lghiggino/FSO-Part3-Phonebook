@@ -1,28 +1,26 @@
+require("dotenv").config();
 const express = require("express");
-const morgan = require("morgan");
 const cors = require("cors");
 const { generateId, duplicateName, morganLogger } = require("./utils");
-
-let people = require("./fixtures");
+const Person = require("./models/person");
 
 const app = express();
 app.use(cors());
-app.use(express.static('build'))
+app.use(express.static("build"));
 app.use(express.json());
 app.use(morganLogger());
 
 app.get("/api/persons", (request, response) => {
-  response.json(people);
+  Person.find({}).then((people) => {
+    response.json(people);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = people.find((person) => person.id === id);
-  if (person) {
+  const id = request.params.id;
+  Person.findById(id).then((person) => {
     response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  });
 });
 
 app.get("/info", (request, response) => {
