@@ -47,25 +47,26 @@ app.delete("/api/persons/:id", (request, response) => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  const isDuplicate = duplicateName(people, body.name);
-
-  if (isDuplicate) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
-
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: "name or number missing",
     });
   }
 
-  const newPersonId = generateId(people);
-  body.id = newPersonId;
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+    date: new Date(),
+  });
 
-  people = people.concat(body);
-  response.status(201).json(body);
+  person
+    .save()
+    .then((savedPerson) => {
+      response.status(201).json(savedPerson);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 const PORT = process.env.PORT || 3001;
