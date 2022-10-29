@@ -34,14 +34,12 @@ app.get("/info", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = people.find((person) => person.id === id);
-  if (person) {
-    people.filter((person) => person.id !== id);
-    response.status(204).end();
-  } else {
-    response.status(404).end();
-  }
+  const id = request.params.id;
+  Person.findByIdAndRemove(id)
+  .then(result => {
+    response.status(204).end()
+  })
+  .catch(error => next(error))
 });
 
 app.post("/api/persons", (request, response) => {
