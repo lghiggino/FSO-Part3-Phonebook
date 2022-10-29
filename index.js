@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { generateId, duplicateName, morganLogger } = require("./utils");
+const { generateId, duplicateName, morganLogger, errorHandler } = require("./utils");
 const Person = require("./models/person");
 
 const app = express();
@@ -16,11 +16,16 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findById(id).then((person) => {
-    response.json(person);
-  });
+    if (person){
+      response.json(person);
+    }else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
@@ -66,6 +71,9 @@ app.post("/api/persons", (request, response) => {
       console.log(error);
     });
 });
+
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
