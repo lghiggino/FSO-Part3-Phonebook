@@ -47,14 +47,8 @@ app.delete("/api/persons/:id", (request, response) => {
   .catch(error => next(error))
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
-
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "name or number missing",
-    });
-  }
 
   const person = new Person({
     name: body.name,
@@ -68,11 +62,10 @@ app.post("/api/persons", (request, response) => {
       response.status(201).json(savedPerson);
     })
     .catch((error) => {
-      console.log(error);
+      next(error);
     });
 });
 
-app.use(unknownEndpoint);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
